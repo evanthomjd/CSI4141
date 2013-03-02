@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CSI4141.MiniProject</string>
+    <string name="menu_settings">Settings</string>
+      <string name="emergency_email">Enter Emergency Contact Email</string>
+    <string name="start_button">START!</string>
+    <string name="title_activity_display_message">Results</string>
+    <string name="distance">Enter Distance</string>
+    <string name="max_time">Max Time</string>
+
+</resources>
