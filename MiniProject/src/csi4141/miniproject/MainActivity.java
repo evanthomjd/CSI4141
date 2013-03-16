@@ -3,6 +3,7 @@ package csi4141.miniproject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -16,9 +17,12 @@ import org.xml.sax.SAXException;
 import communication.Direction;
 
 import locationfactory.LocationFactory;
+import services.AlarmService;
 import services.LocationService;
 import services.PathService;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -56,6 +60,17 @@ public class MainActivity extends Activity {
 		EditText emergencyContact = (EditText) findViewById(R.id.emergency_email);
 		EditText distance = (EditText) findViewById(R.id.distance);
 		EditText maxTime = (EditText) findViewById(R.id.max_time);
+
+		//Set up the information for the emergency alarm		
+		Intent alarmIntent = new Intent(MainActivity.this, AlarmService.class);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MINUTE, Integer.parseInt(maxTime.getText().toString()));	
+		alarmIntent.putExtra("email", emergencyContact.getText().toString());
+
+		PendingIntent sender = PendingIntent.getBroadcast(this, 192837, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
 
 
 		//initialize the location factory 
