@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
 	private int range, angle;
 	private double currentLat, currentLong, destLat, destLong;
 	private String queryString;
-	private List<Direction> directionList = new ArrayList<Direction>();
+	private ArrayList<Direction> directionList = new ArrayList<Direction>();
 
 
 	public void onCreate(Bundle savedInstanceState)
@@ -55,12 +55,13 @@ public class MainActivity extends Activity {
 		//Create intent to start PathService
 		Intent intent = new Intent(this, PathService.class);
 
-
+		Toast.makeText(this, "One", Toast.LENGTH_SHORT).show();
 		//Retrieve the input from the user 
 		EditText emergencyContact = (EditText) findViewById(R.id.emergency_email);
 		EditText distance = (EditText) findViewById(R.id.distance);
 		EditText maxTime = (EditText) findViewById(R.id.max_time);
 
+		Toast.makeText(this, "Two", Toast.LENGTH_SHORT).show();
 		//Set up the information for the emergency alarm		
 		Intent alarmIntent = new Intent(MainActivity.this, AlarmService.class);
 		Calendar cal = Calendar.getInstance();
@@ -72,12 +73,9 @@ public class MainActivity extends Activity {
 		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
 
-
-		//initialize the location factory 
 		if(locationFactory!=null){
 			locationFactory.init(MainActivity.this);
 		}
-
 		if(locationFactory.canGetLocation()){
 			//Get first location 
 			Location location = locationFactory.getPos();
@@ -96,7 +94,7 @@ public class MainActivity extends Activity {
 				destLong = (Math.sin(angle)*range)+currentLong;
 				
 				
-				//http://maps.googleapis.com/maps/api/directions/xml?origin=43.6533100,-79.3827700&destination=45.5104800,-73.5533200&sensor=false&mode=walking
+			
 				queryString = "http://maps.googleapis.com/maps/api/directions/xml?origin="+currentLat+","+currentLong+"&destination="+destLat+","+destLong+"&sensor=false&mode=walking";
 				Document document = documentBuilder.parse(queryString);
 
@@ -116,7 +114,6 @@ public class MainActivity extends Activity {
 		            }              
 		        }
 		        
-		        //
 		        for(int i=0; i<instructions.getLength(); i++){
 		        	steps = instructions.item(i).getChildNodes();
 		        	directionList.get(i).setDirection(steps.item(0).getNodeValue());
@@ -129,9 +126,10 @@ public class MainActivity extends Activity {
 		}
 
 
-		//intent.putExtra(TEST_TUPLE, emergencyContact.getText().toString() + " , "+distance.getText().toString()+","+maxTime.getText().toString());
 
-		//startService(intent);
+		intent.putParcelableArrayListExtra("directionsList", directionList);
+
+		startService(intent);
 	}
 
 }
