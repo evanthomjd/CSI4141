@@ -25,6 +25,9 @@ public class LocationService extends Service implements LocationListener  {
 	Location location;
 	double lat, lag;
 	
+	//This is used by the alarm service.
+	private static Location currentLocation;
+	
 	protected LocationManager locationManager;
 	
 	public LocationService(Context context){
@@ -69,6 +72,8 @@ public class LocationService extends Service implements LocationListener  {
 	                    }	
 				}
 			}
+			
+			currentLocation = location;
 		}
 		catch(Exception e){};
 		
@@ -113,6 +118,10 @@ public class LocationService extends Service implements LocationListener  {
  
         // Showing Alert Message
         alertDialog.show();
+    }
+    
+    public static Location getLastLocation() {
+    	return currentLocation;
     }
 	
 	//Following methods are not used so are left unimplemented

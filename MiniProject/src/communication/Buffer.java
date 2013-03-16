@@ -24,11 +24,11 @@ public class Buffer {
 	
 	public void write(String message) throws InterruptedException{
 
-			empty.acquire();
+			full.acquire();
 			mutex.acquire();
 			deque.add(message);
 			mutex.release();
-			full.release();
+			empty.release();
 
 		
 	}
@@ -37,11 +37,11 @@ public class Buffer {
 	public String read() throws InterruptedException{
 		String message = "";
 
-			full.acquire();
+			empty.acquire();
 			mutex.acquire();
 			message = deque.remove();
 			mutex.release();
-			empty.release();
+			full.release();
 			
 				
 		return message;

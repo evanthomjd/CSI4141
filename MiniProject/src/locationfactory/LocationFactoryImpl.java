@@ -40,7 +40,7 @@ public class LocationFactoryImpl extends LocationFactory implements LocationList
 			gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 			netWorkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 			
-			if(!gpsEnabled || !netWorkEnabled){
+			if(!gpsEnabled){
 				//do nothing
 			}else{
 				canGetLocation = true;
