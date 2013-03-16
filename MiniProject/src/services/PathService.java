@@ -2,38 +2,52 @@ package services;
 
 import java.util.Timer;
 
+import communication.Buffer;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.widget.Toast;
 
+/*
+ * Wrapper class that runs the checkupdate class every second. 
+ */
 public class PathService extends Service {
 
-	private CheckUpdate checkUpdate;
 	private Timer timer;
-	
 	private boolean running = false;
+	private Buffer buffer;
+	private PathNotificationService pathNotificationService;
 	
 	@Override
 	public void onCreate() {
-	    // TODO Auto-generated method stub
 	    super.onCreate();
 	    timer = new Timer();
-	    timer.scheduleAtFixedRate(new CheckUpdate((LocationManager) this.getSystemService(Context.LOCATION_SERVICE), getApplicationContext()), 1000, 2000);
+	    this.buffer = new Buffer();
+	
+	    timer.scheduleAtFixedRate(new CheckUpdate(buffer), 1000, 2000);
 	    running = true;
 
 	}
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
+				
 		if(!running){
 			 timer = new Timer();
-			 timer.scheduleAtFixedRate(new CheckUpdate((LocationManager) this.getSystemService(Context.LOCATION_SERVICE), getApplicationContext()), 1000, 2000);
+			 
+			 if(pathNotificationService == null){
+				    this.pathNotificationService = new PathNotificationService(getApplicationContext(),buffer);	
+				}
+			 
+			 timer.scheduleAtFixedRate(new CheckUpdate(buffer), 1000, 2000);
 			 running = true;
 		}
-		Toast.makeText(this, "service started3", Toast.LENGTH_SHORT).show();
+		
+		
 		return super.onStartCommand(intent, flags, startId);
 	}
 	

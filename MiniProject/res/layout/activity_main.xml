@@ -10,18 +10,23 @@
         android:layout_height="wrap_content"
         android:hint="@string/emergency_email" />
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:onClick="startRun"
+        android:text="@string/start_button" />
+
     <EditText
         android:id="@+id/max_time"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/button1"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="29dp"
         android:ems="10"
-        android:hint="@string/max_time" >
-
-        <requestFocus />
-    </EditText>
+        android:hint="@string/max_time" />
 
     <EditText
         android:id="@+id/distance"
@@ -29,18 +34,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/emergency_email"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="42dp"
         android:ems="10"
-        android:hint="@string/distance" />
+        android:hint="@string/distance" >
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="20dp"
-        android:onClick="startRun"
-        android:text="@string/start_button" />
+        <requestFocus />
+    </EditText>
 
 </RelativeLayout>
