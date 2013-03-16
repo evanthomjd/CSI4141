@@ -126,7 +126,7 @@ public class MainActivity extends Activity {
 		//Set up the rest of the information for the emergency alarm		
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.MINUTE, Integer.parseInt(maxTime.getText().toString()));	
-		alarmIntent.putExtra("email", emergencyContact.getText().toString());
+		alarmIntent.putExtra("contact", emergencyContact.getText().toString());
 
 		PendingIntent sender = PendingIntent.getBroadcast(this, 192837, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 

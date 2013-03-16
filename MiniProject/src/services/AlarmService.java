@@ -1,11 +1,16 @@
 package services;
 
+import java.util.List;
+
 import locationfactory.LocationFactory;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
 import android.location.Location;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.widget.Toast;
 
 public class AlarmService extends BroadcastReceiver {
@@ -16,7 +21,7 @@ public class AlarmService extends BroadcastReceiver {
 			Bundle bundle = intent.getExtras();
 			Location lastLocation = LocationService.getLastLocation();
 
-			String email = bundle.getString("email");
+			String phoneNumber = bundle.getString("contact");
 			double homeLatitude = bundle.getDouble("homeLat");
 			double homeLongitude = bundle.getDouble("homeLong");
 
@@ -31,7 +36,29 @@ public class AlarmService extends BroadcastReceiver {
 				//Do nothing, we're done here. Maybe send a toast notification?
 			}
 			else {
-				Toast.makeText(context, "Send email to: " + email, Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "Send SMS to: " + phoneNumber, Toast.LENGTH_SHORT).show();
+				
+				List<Address> addresses = new Geocoder(context).getFromLocation(lastLocation.getLatitude(),lastLocation.getLongitude() , 1);
+				Address current = addresses.get(0);
+				
+				String line1 = current.getAddressLine(0);
+				String line2 = current.getAddressLine(1);
+				String area = current.getLocality();
+				String postal = current.getPostalCode();
+				
+				if (line1 == null)
+					line1 = "";
+				if (line2 == null)
+					line2 = "";
+				if (area == null)
+					area = "";
+				if (postal == null)
+					postal = "";
+				
+				String message = "I'm late coming back from my run. My last known location was: " + line1 + ", " +
+						line2 + ", " + area + ", " + postal;
+				
+				sendSMS(phoneNumber, message);
 			}
 		} catch (Exception e) {
 			Toast.makeText(context, "There was an error somewhere, but we still received an alarm", Toast.LENGTH_SHORT).show();
@@ -53,5 +80,12 @@ public class AlarmService extends BroadcastReceiver {
 		
 		return true;
 	}
+	
+	private void sendSMS(String number, String message) {
+	    SmsManager smsManager = SmsManager.getDefault();
+	    smsManager.sendTextMessage(number, null, message, null, null);
+	}
+	
+	
 
 }
