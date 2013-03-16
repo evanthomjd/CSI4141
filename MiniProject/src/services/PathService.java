@@ -26,8 +26,7 @@ public class PathService extends Service {
 	public void onCreate() {
 	    super.onCreate();
 	    timer = new Timer();
-	    this.buffer = new Buffer();
-	
+	    this.buffer = new Buffer();	
 	    timer.scheduleAtFixedRate(new CheckUpdate(buffer), 1000, 2000);
 	    running = true;
 

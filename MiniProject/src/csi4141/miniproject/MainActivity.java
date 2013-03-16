@@ -13,6 +13,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import communication.Direction;
+
 import locationfactory.LocationFactory;
 import services.LocationService;
 import services.PathService;
@@ -34,6 +36,7 @@ public class MainActivity extends Activity {
 	private int range, angle;
 	private double currentLat, currentLong, destLat, destLong;
 	private String queryString;
+	private List<Direction> directionList = new ArrayList<Direction>();
 
 
 	public void onCreate(Bundle savedInstanceState)
@@ -64,11 +67,9 @@ public class MainActivity extends Activity {
 			//Get first location 
 			Location location = locationFactory.getPos();
 
-
-
 			if(location!=null){
 				List<String> tuples = new ArrayList<String>();
-				NodeList lat, lng;
+				NodeList lat, lng, steps;
 				DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
@@ -84,6 +85,27 @@ public class MainActivity extends Activity {
 				queryString = "http://maps.googleapis.com/maps/api/directions/xml?origin="+currentLat+","+currentLong+"&destination="+destLat+","+destLong+"&sensor=false&mode=walking";
 				Document document = documentBuilder.parse(queryString);
 
+				NodeList latNodeList = document.getElementsByTagName("lat");       
+		        NodeList lngNodeList = document.getElementsByTagName("lng");
+		        NodeList instructions = document.getElementsByTagName("html_instructions");
+				
+		        //Create direction objects and give them their latitude and longitude values
+		        for(int i=1; i<latNodeList.getLength()-3; i++){
+		            if(i%2!=0){
+		            	Direction direction = new Direction();
+		                lat = latNodeList.item(i).getChildNodes(); 
+		                lng = lngNodeList.item(i).getChildNodes();
+		                direction.setLat(Double.parseDouble(lat.item(0).getNodeValue()));
+		                direction.setLog(Double.parseDouble(lng.item(0).getNodeValue()));
+		                directionList.add(direction);
+		            }              
+		        }
+		        
+		        //
+		        for(int i=0; i<instructions.getLength(); i++){
+		        	steps = instructions.item(i).getChildNodes();
+		        	directionList.get(i).setDirection(steps.item(0).getNodeValue());
+		        }
 				String currentLocation= currentLat + " , " + currentLong;
 				Toast.makeText(this, currentLocation, Toast.LENGTH_SHORT).show();
 			}

@@ -26,9 +26,7 @@ public class CheckUpdate extends TimerTask {
 	
 	public CheckUpdate( Buffer buffer){
 		super();
-		this.buffer = buffer;
-	
-		
+		this.buffer = buffer;		
 		
 	}
 
