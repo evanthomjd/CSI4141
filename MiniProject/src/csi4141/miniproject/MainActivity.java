@@ -61,22 +61,13 @@ public class MainActivity extends Activity {
 		EditText distance = (EditText) findViewById(R.id.distance);
 		EditText maxTime = (EditText) findViewById(R.id.max_time);
 
-		//Set up the information for the emergency alarm		
-		Intent alarmIntent = new Intent(MainActivity.this, AlarmService.class);
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.MINUTE, Integer.parseInt(maxTime.getText().toString()));	
-		alarmIntent.putExtra("email", emergencyContact.getText().toString());
-
-		PendingIntent sender = PendingIntent.getBroadcast(this, 192837, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
-
-
 		//initialize the location factory 
 		if(locationFactory!=null){
 			locationFactory.init(MainActivity.this);
 		}
+		
+		//Create the Intent for the alarmService
+		Intent alarmIntent = new Intent(MainActivity.this, AlarmService.class);
 
 		if(locationFactory.canGetLocation()){
 			//Get first location 
@@ -94,6 +85,10 @@ public class MainActivity extends Activity {
 				angle = 1 + (int)(Math.random()*361);
 				destLat = (Math.cos(angle)*range)+currentLat;
 				destLong = (Math.sin(angle)*range)+currentLong;
+				
+				//Store the home location for use by the emergency alarm
+				alarmIntent.putExtra("homeLat", currentLat);
+				alarmIntent.putExtra("homeLong", currentLong);
 				
 				
 				//http://maps.googleapis.com/maps/api/directions/xml?origin=43.6533100,-79.3827700&destination=45.5104800,-73.5533200&sensor=false&mode=walking
@@ -127,6 +122,16 @@ public class MainActivity extends Activity {
 		}else{
 			locationFactory.showSettingsAlert();
 		}
+		
+		//Set up the rest of the information for the emergency alarm		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MINUTE, Integer.parseInt(maxTime.getText().toString()));	
+		alarmIntent.putExtra("email", emergencyContact.getText().toString());
+
+		PendingIntent sender = PendingIntent.getBroadcast(this, 192837, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
 
 
 		//intent.putExtra(TEST_TUPLE, emergencyContact.getText().toString() + " , "+distance.getText().toString()+","+maxTime.getText().toString());
