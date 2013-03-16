@@ -25,7 +25,6 @@ public class PathNotificationService extends Thread {
 		if(speechFactory != null){
 			speechFactory.init(this.context);
 		}
-		this.run();
 	}
 	
 	@Override
