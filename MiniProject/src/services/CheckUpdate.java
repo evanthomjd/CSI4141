@@ -75,6 +75,7 @@ public class CheckUpdate extends TimerTask {
 						message = messageContent.get(0) + " onto " + messageContent.get(1);
 						try {
 							buffer.write(message);
+							directionList.remove(0);
 						} catch (InterruptedException e) {
 							
 						}

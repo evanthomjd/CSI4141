@@ -83,8 +83,6 @@ public class LocationFactoryImpl extends LocationFactory implements LocationList
 	}
 	
 	
-	
-	
 	public void stop(){
 		if(locationManager != null){
 			locationManager.removeUpdates(LocationFactoryImpl.this);

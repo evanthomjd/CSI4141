@@ -31,7 +31,7 @@ public class SpeechFactory extends Factory implements TextToSpeech.OnInitListene
 
 	@Override
 	public void onInit(int status) {
-		Locale loc = new Locale("de", "", "");
+		Locale loc = new Locale("en_CA", "", "");
 		  if (textToSpeech.isLanguageAvailable(loc) >= TextToSpeech.LANG_AVAILABLE) {
 			  textToSpeech.setLanguage(loc);
 		    }

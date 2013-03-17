@@ -35,7 +35,7 @@ public class PathService extends Service {
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
-		directionList = intent.getExtras().getParcelableArrayList("directionList");		
+		directionList = intent.getExtras().getParcelableArrayList("directionsList");		
 		if(!running){
 			 timer = new Timer();
 			 
