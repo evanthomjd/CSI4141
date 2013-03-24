@@ -4,6 +4,7 @@ import speechfactory.Factory;
 import communication.Buffer;
 
 import android.content.Context;
+import android.util.Log;
 /**
  * This class runs a thread that continuly tries to read from a buffer. When it succesffuly reads,
  * It then "speaks"/informs the user of the message that has just been read.

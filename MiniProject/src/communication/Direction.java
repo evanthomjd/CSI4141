@@ -5,16 +5,22 @@ import android.os.Parcelable;
 
 public class Direction implements Parcelable {
 	private String direction;
+	private String street;
 	private double lat;
 	private double log;
 	
 	public Direction(){
 		
 	}
+	
+	
+
+
 	public Direction(Parcel source){
 		lat = source.readDouble();
 		log = source.readDouble();
 		direction = source.readString();
+		street = source.readString();
 	}
 	
 	public String getDirection() {
@@ -22,6 +28,12 @@ public class Direction implements Parcelable {
 	}
 	public void setDirection(String direction) {
 		this.direction = direction;
+	}
+	public String getStreet() {
+		return street;
+	}
+	public void setStreet(String street) {
+		this.street = street;
 	}
 	public double getLat() {
 		return lat;
@@ -44,6 +56,7 @@ public class Direction implements Parcelable {
 		dest.writeDouble(lat);
 		dest.writeDouble(log);
 		dest.writeString(direction);
+		dest.writeString(street);
 		
 	}
 	

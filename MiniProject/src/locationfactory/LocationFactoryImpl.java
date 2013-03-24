@@ -9,12 +9,15 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
+
 
 public class LocationFactoryImpl extends LocationFactory implements LocationListener{
 
 	private  Context context;
-	private static final long MIN_DISTANCE = 5;
-	private static final long MIN_TIME = 1000;
+	private static final long MIN_DISTANCE = 10;
+	private static final long MIN_TIME = 1000*10;
+	
 	
 	boolean gpsEnabled = false;	
 	boolean netWorkEnabled = false;
@@ -34,6 +37,8 @@ public class LocationFactoryImpl extends LocationFactory implements LocationList
 	}
 	
 	public Location getLocation(){
+		Location gpsLocation, netWorkLocation;
+		netWorkLocation = null;
 
 		try{
 			locationManager = (LocationManager)context.getSystemService(LOCATION_SERVICE);			
@@ -48,30 +53,41 @@ public class LocationFactoryImpl extends LocationFactory implements LocationList
 				if(netWorkEnabled){
 					locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
 					if(locationManager != null){
-						location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+						netWorkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+				
 						if(location != null){
 							lat = location.getLatitude();
 							lag = location.getLongitude();
 						}
+
 					}
+				}else{
+					Log.e("CHECK UPDATE" ,"netWROKNOTENABLED");
 				}
 				
 				if(gpsEnabled){
-					 if (location == null) {
+					
 	                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
 	                        if (locationManager != null) {
-	                            location = locationManager
-	                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-	                            if (location != null) {
+	                            gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+	                            if (gpsLocation != null) {
+	                                if(netWorkLocation!=null && netWorkLocation.hasAccuracy()){
+	    	                        	if(gpsLocation.hasAccuracy() && gpsLocation.getAccuracy() <= netWorkLocation.getAccuracy()){
+	    	                        		location = gpsLocation;
+	    	                        	}else{
+	    	                        		location = netWorkLocation;
+	    	                        	}
+	    	                        }
 	                                lat = location.getLatitude();
 	                                lag = location.getLongitude();
 	                            }
 	                        }
-	                    }	
-				}
+	                    
+	                    }
 			}
 		}
-		catch(Exception e){};
+		catch(Exception e){Log.e("CHECKUPDATE", "error in get location");};
 		
 		return location;
 	}
@@ -121,7 +137,14 @@ public class LocationFactoryImpl extends LocationFactory implements LocationList
 	}
 
 	@Override
-	public void onLocationChanged(Location location) {
+	public void onLocationChanged(Location newLocation) {
+		Log.e("CHECKUPDATE", "LOCATION UPDATED");
+		if(newLocation.getAccuracy()<=60.0){
+			this.location = newLocation;
+		}else{
+			Log.e("CHECKUPDATE", "Not Accurate Enough at " + newLocation.getAccuracy());
+		}
+		
 		
 	}
 
