@@ -1,8 +1,11 @@
 package services;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import locationfactory.LocationFactory;
+import locationfactory.LocationFactoryImpl;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +22,7 @@ public class AlarmService extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		try {
 			Bundle bundle = intent.getExtras();
-			Location lastLocation = LocationService.getLastLocation();
+			String message;
 
 			String phoneNumber = bundle.getString("contact");
 			double homeLatitude = bundle.getDouble("homeLat");
@@ -30,38 +33,40 @@ public class AlarmService extends BroadcastReceiver {
 			if (locationFactory == null) {
 				throw new Exception("Location Factory not instantiated");
 			}
-
+			Location lastLocation = locationFactory.getPos();
 			//Do stuff here
 			if (inSafeZone(homeLatitude, homeLongitude, lastLocation)) {
 				//Do nothing, we're done here. Maybe send a toast notification?
 			}
-			else {
-				Toast.makeText(context, "Send SMS to: " + phoneNumber, Toast.LENGTH_SHORT).show();
+			else {	
+				try{
+			
+					List<Address> addresses = new Geocoder(context, Locale.getDefault()).getFromLocation(lastLocation.getLatitude(),lastLocation.getLongitude() , 1);
+					Address current = addresses.get(0);
+					
+					String line1 = current.getAddressLine(0);
+					String line2 = current.getAddressLine(1);
+					
+					if (line1 == null)
+						line1 = "";
+					if (line2 == null)
+						line2 = "";
+
+					
+					 message = "I'm late coming back from my run. My last known location was: " + line1 + ", " +
+							line2 +" please call me"; 
+				}catch(IOException e){
+					//If the Geocoder cannot establish a connection it throws an IOException, however we still want to alert someone that the runner is late. So we leave out their location
+					//from the message
+					message ="I'm late coming back from my run, please call me";
+				}
 				
-				List<Address> addresses = new Geocoder(context).getFromLocation(lastLocation.getLatitude(),lastLocation.getLongitude() , 1);
-				Address current = addresses.get(0);
-				
-				String line1 = current.getAddressLine(0);
-				String line2 = current.getAddressLine(1);
-				String area = current.getLocality();
-				String postal = current.getPostalCode();
-				
-				if (line1 == null)
-					line1 = "";
-				if (line2 == null)
-					line2 = "";
-				if (area == null)
-					area = "";
-				if (postal == null)
-					postal = "";
-				
-				String message = "I'm late coming back from my run. My last known location was: " + line1 + ", " +
-						line2 + ", " + area + ", " + postal;
 				
 				sendSMS(phoneNumber, message);
+				Toast.makeText(context, "Send SMS to: " + phoneNumber, Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
-			Toast.makeText(context, "There was an error somewhere, but we still received an alarm", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
 
 		}

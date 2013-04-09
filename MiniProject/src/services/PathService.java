@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 /*
@@ -57,6 +58,7 @@ public class PathService extends Service {
 		if(timer!=null){
 			timer.cancel();
 		}
+		pathNotificationService.interrupt();
 		running = false;
 		
 	}

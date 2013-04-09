@@ -46,10 +46,18 @@
         style="@style/AppBaseTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/distance"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="53dp"
+        android:onClick="stopRun"
         android:visibility="gone"
-        android:text="@string/stop_button" />
+        android:text="@string/stop_button"/>
+
+    <TextView
+        android:id="@+id/directions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/max_time"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="17dp" />
 
 </RelativeLayout>
