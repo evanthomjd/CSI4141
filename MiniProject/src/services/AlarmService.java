@@ -36,7 +36,7 @@ public class AlarmService extends BroadcastReceiver {
 			Location lastLocation = locationFactory.getPos();
 			//Do stuff here
 			if (inSafeZone(homeLatitude, homeLongitude, lastLocation)) {
-				//Do nothing, we're done here. Maybe send a toast notification?
+				
 			}
 			else {	
 				try{
